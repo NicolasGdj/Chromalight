@@ -12,11 +12,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Unity
-        uses: game-ci/unity-setup@v2
-        with:
-          unity-version: 2021.3.22f1
-
       - name: Build project
         uses: game-ci/unity-builder@v2
         with:
