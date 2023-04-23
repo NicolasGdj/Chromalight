@@ -6,7 +6,7 @@ public class LaserWay : MonoBehaviour
 {
     public LaserEmitterController[] emitters;
     public float timeBetweenStates = 0.1f;
-    private int maxDeactivatedLasers = 5;
+    public int maxDeactivatedLasers = 5;
 
     // Start is called before the first frame update
     void Start()
