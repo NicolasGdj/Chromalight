@@ -32,13 +32,10 @@ public abstract class LaserActivable : MonoBehaviour, ILaserActivable
         return activated;
     }
 
-    public void onLaserActivated(LaserSender sender, RaycastHit2D hit) {
-        
-    }
+    public abstract void onLaserActivated(LaserSender sender, RaycastHit2D hit);
 
-    public void onLaserDeactivated(LaserSender sender) {
+    public abstract void onLaserDeactivated(LaserSender sender);
         
-    }
 
     void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();

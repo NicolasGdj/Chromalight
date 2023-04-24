@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SelectableSprite : ComponentActivable
 {
-
     public void show() {
         GetSpriteRenderer().enabled = true;
     }

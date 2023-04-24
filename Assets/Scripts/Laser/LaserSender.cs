@@ -69,6 +69,13 @@ public abstract class LaserSender : MonoBehaviour
 
     public void DrawLaser(Vector2 startPosition, Vector3 direction, float distance, int bounce) {
         
+        if(distance <= 0.5) {
+            lineRenderer.enabled = false;
+            return;
+        } else {
+            lineRenderer.enabled = true;
+        }
+
         if(bounce > MAX_BOUNCES)
             return;
         

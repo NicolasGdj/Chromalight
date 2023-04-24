@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Linq;
 
 public class LevelEditor : MonoBehaviour
 {
@@ -34,15 +35,10 @@ public class LevelEditor : MonoBehaviour
                 bool found = false;
                 Vector3 center = player.transform.position;
 
-                Debug.Log("--------------");
-                Debug.Log(player.transform.position + " -> " + center);
-                foreach (Workstation workstation in workstations)
-                {
+                foreach (Workstation workstation in workstations) {
                     Vector3 position = workstation.transform.position;
                     float distance = Vector3.Distance(center, position);
-                    Debug.Log(position + " -> " + distance);
-                    if (distance <= workstationProximityThreshold)
-                    {
+                    if (distance <= workstationProximityThreshold) {
                         found = true;
                         break;
                     }
@@ -114,7 +110,7 @@ public class LevelEditor : MonoBehaviour
                     GameObject hitObject = hit.collider.gameObject;
                     if (IsEditableObject(hitObject)) {
                         SetSelectedObject(hitObject);
-                        selectedObjectColliderCount = GetColliderCount(SnapToGrid(selectedObject.transform.position));
+                        selectedObjectColliderCount = GetColliderCount(SnapToGrid(selectedObject.transform.position), selectedObject);
                     } else {
                         SetSelectedObject(null);
                     }
@@ -127,7 +123,7 @@ public class LevelEditor : MonoBehaviour
         if (selectedObject != null) {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 gridPosition = SnapToGrid(mousePosition);
-            if(validPositions.GetTile(validPositions.WorldToCell(mousePosition)) != null && GetColliderCount(gridPosition) == 0) {
+            if(validPositions.GetTile(validPositions.WorldToCell(mousePosition)) != null && GetColliderCount(gridPosition, selectedObject) == 0) {
                 selectedObject.transform.position = new Vector3(gridPosition.x, gridPosition.y, selectedObject.transform.position.z);
             }
             float scrollDelta = Input.GetAxis("Mouse ScrollWheel");
@@ -142,8 +138,16 @@ public class LevelEditor : MonoBehaviour
         }
     }
 
-    int GetColliderCount(Vector2 position) {
-        return Physics2D.OverlapCircleAll(position, radius).Length;
+    int GetColliderCount(Vector2 position, GameObject exclude) {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(position, radius);
+        
+        // Filtrer les collisions pour exclure l'objet spécifié et ses enfants
+        Collider2D[] filteredColliders = colliders.Where(collider =>
+            collider.gameObject != exclude &&
+            !collider.transform.IsChildOf(exclude.transform)
+        ).ToArray();
+        
+        return filteredColliders.Length;
     }
 
     bool IsAnEmptyCell(Vector2 position, GameObject ignoreObject) {
