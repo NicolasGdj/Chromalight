@@ -105,17 +105,20 @@ public class LevelEditor : MonoBehaviour
             if(selectedObject != null) {
                 SetSelectedObject(null);
             } else {
-                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if(hit.collider != null) {
-                    GameObject hitObject = hit.collider.gameObject;
-                    if (IsEditableObject(hitObject)) {
-                        SetSelectedObject(hitObject);
-                        selectedObjectColliderCount = GetColliderCount(SnapToGrid(selectedObject.transform.position), selectedObject);
+                RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+                foreach(RaycastHit2D hit in hits) {
+                    if(hit.collider != null) {
+                        GameObject hitObject = hit.collider.gameObject;
+                        if (IsEditableObject(hitObject)) {
+                            SetSelectedObject(hitObject);
+                            selectedObjectColliderCount = GetColliderCount(SnapToGrid(selectedObject.transform.position), selectedObject);
+                            break;
+                        } else {
+                            SetSelectedObject(null);
+                        }
                     } else {
                         SetSelectedObject(null);
                     }
-                } else {
-                    SetSelectedObject(null);
                 }
             }
         }
